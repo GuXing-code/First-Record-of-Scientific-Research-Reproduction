@@ -1,4 +1,4 @@
-function [output] = my_qpsk_mod(tx_bits,f,Ts)
+function [output] = qpsk_mod(tx_bits,f,Ts)
 %使用qpsk调制信号
 %tx_bits:原始比特
 %f:载波频率
