@@ -6,6 +6,10 @@ function [I_eq,Q_eq] = rls_dfe_equalizer(Know_signal,rx_first,K1,K2,lambda_rls,d
 %lambda_rls：遗忘因子（RLS算法中的）
 %delta_rls：是一个常数（系统参数的初始化中的），默认0.5
 %I_eq,Q_eq：均衡后的符号值
+
+Know_signal = Know_signal(:);
+rx_first = rx_first(:);
+
 I_train = Know_signal(1:2:end);
 Q_train = Know_signal(2:2:end);
 z_train = I_train + 1j*Q_train;
