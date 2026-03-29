@@ -5,17 +5,16 @@ function [h_pre] = channel_estimation(know_signal, obverse_signal, L, N_b)
 % N_b：用于估计的观测符号长度
 know_signal = reshape(know_signal,1,[]);
 obverse_signal = reshape(obverse_signal,1,[]);
-
+%这里的顺序和论文并不一样
 x = know_signal(1:N_b + L - 1);
-Y = obverse_signal(N_b:-1:1).';
+Y = obverse_signal(L+N_b-1:-1:L).';
 
 X = complex(zeros(N_b, L));
 for i = 1:N_b
-    X(i,:) = x((N_b-i) + L: -1 : (N_b-i)+1);
+    X(N_b-i+1,:) = x(i+L-1:-1:i);
 end
 
-%h_pre = (inv(X' * X))* X' * Y;
-% h_pre = (X' * X) \ (X' * Y);
-reg = 1e-4;
-h_pre = (X' * X + reg * eye(L)) \ (X' * Y);
+h_pre = (X' * X) \ (X' * Y);
+% reg = 1e-4;%ai说这样改可以加大抗干扰
+% h_pre = (X' * X + reg * eye(L)) \ (X' * Y);
 end
