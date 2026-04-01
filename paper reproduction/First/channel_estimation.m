@@ -20,7 +20,8 @@ end
 h_pre = (X' * X) \ (X' * Y);
 
 
-%加入LMMSE估计信道
+%加入LMMSE估计信道：
+
 %1.使用LS得到初步信道估计h_pre
 %2.估计噪声方差
 sigma=sum((Y-X*h_pre).^2)/N_b;
