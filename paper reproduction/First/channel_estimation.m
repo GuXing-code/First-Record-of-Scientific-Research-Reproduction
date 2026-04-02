@@ -4,7 +4,6 @@ function [h_pre] = channel_estimation(know_signal, obverse_signal, L, N_b)
 % L: 需要估计的等效信道长度（单位：符号）
 % N_b: 用于估计的观测符号长度
 
-
 %使用LS估计信道
 know_signal = reshape(know_signal,1,[]);
 obverse_signal = reshape(obverse_signal,1,[]);

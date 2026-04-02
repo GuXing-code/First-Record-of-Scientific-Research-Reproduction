@@ -101,7 +101,7 @@ for m = 1:num_elements
     sig1 = [sig1, zeros(1, L - length(sig1))];
     sig2 = [sig2, zeros(1, L - length(sig2))];
     rx_signal_all{m} = sig1 + sig2;
-    rx_signal_all{m} = awgn(rx_signal_all{m}, 5, 'measured');
+    rx_signal_all{m} = awgn(rx_signal_all{m}, 1, 'measured');
 end
 
 % 同步截取
@@ -153,36 +153,33 @@ rx_first = reshape([real(z_ptr); imag(z_ptr)], [], 1);
 [~, idx0] = max(abs(q_est_double));
 z_ptr = z_ptr(idx0:end);
 rx_first_double = reshape([real(z_ptr); imag(z_ptr)], [], 1);
+%q12和q21
+[q12,q21]=calc_cross_q(h_pre_all,h_pre_all_double);
+q11 = q_est;
+q22 = q_est_double;
 
 % 自适应信道均衡判决器（使用交织 I/Q 输入）
 %用户1
-[I_dfe, Q_dfe] = rls_dfe_equalizer(Know_train_signal(1:KnowBits), rx_second, 20, 20, 0.9965, 0.5);
-[I_ptr_dfe, Q_ptr_dfe] = rls_dfe_equalizer(Know_train_signal(1:KnowBits), rx_first, 20, 20, 0.9965, 0.5);
+% [I_dfe, Q_dfe] = rls_dfe_equalizer(Know_train_signal(1:KnowBits), rx_second, 10, 10, 0.9965, 0.5);
+[I_ptr_dfe, Q_ptr_dfe] = rls_dfe_equalizer(Know_train_signal(1:KnowBits), rx_first, 10, 10, 0.9965, 0.5);
 %用户2
-[I_dfe_double, Q_dfe_double] = rls_dfe_equalizer(Know_train_signal_double(1:KnowBits), rx_second, 20, 20, 0.9965, 0.5);
-[I_ptr_dfe_double, Q_ptr_dfe_double] = rls_dfe_equalizer(Know_train_signal_double(1:KnowBits), rx_first_double, 20, 20, 0.9965, 0.5);
+% [I_dfe_double, Q_dfe_double] = rls_dfe_equalizer(Know_train_signal_double(1:KnowBits), rx_second, 10, 10, 0.9965, 0.5);
+[I_ptr_dfe_double, Q_ptr_dfe_double] = rls_dfe_equalizer(Know_train_signal_double(1:KnowBits), rx_first_double, 10, 10, 0.9965, 0.5);
+
+%ptr_sic_dfe
+[I1_dec, Q1_dec,I2_dec, Q2_dec]=ptr_sic_dfe(Know_train_signal(1:KnowBits),Know_train_signal_double(1:KnowBits), ...
+    rx_first,rx_first_double,z_rx_all,h_pre_all, ...
+    h_pre_all_double,KnowBits,3, ...%迭代3轮
+    q11, q22, q12, q21,1);%5db高斯噪声作为基准噪声N0
+
 
 % 计算误码率
 calc_ber
 
-% 绘制 q 函数
-%用户1
-t_q1 = (0:length(q_est)-1) / Rs;
-q_plot1 = abs(q_est);
-q_plot1 = q_plot1 / max(q_plot1);
-
-t_q2 = (0:length(q_est_double)-1) / Rs;
-q_plot2 = abs(q_est_double);
-q_plot2 = q_plot2 / max(q_plot2);
-
-figure;
-plot(t_q1, q_plot1, 'b', 'LineWidth', 1.5);
-hold on;
-plot(t_q2, q_plot2, 'r', 'LineWidth', 1.5);
-hold off;
-
-xlabel('时间/s');
-ylabel('归一化幅度');
-title('双用户 PTR 的 q 函数');
-legend('q11', 'q22');
-grid on;
+% 观察 SIC 前后效果（单独辅助分析，不影响原有主流程）
+sic_effect_results = inspect_sic_effect( ...
+    tx_bit, tx_bit_double, ...
+    I_ptr_dfe, Q_ptr_dfe, I_ptr_dfe_double, Q_ptr_dfe_double, ...
+    I1_dec, Q1_dec, I2_dec, Q2_dec, ...
+    'q11', q11, 'q22', q22, 'q12', q12, 'q21', q21, ...
+    'figure_name', 'PTR-SIC-DFE效果');
