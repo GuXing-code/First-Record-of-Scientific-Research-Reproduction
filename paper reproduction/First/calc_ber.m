@@ -17,10 +17,10 @@ fprintf("用户1:ptr_dfe误码率：%.4f\n",ber_ptr_dfe);
 % ber_dfe = sum(tx_bit(1:L) ~= rx_bit_dfe(1:L)) / L * 100
 
 % 计算误码率 (直接解调)
-rx_bit_direct = reshape([(I > 0); (Q > 0)], [], 1);
-L = min(length(tx_bit), length(rx_bit_direct));
-ber_direct = sum(tx_bit(1:L) ~= rx_bit_direct(1:L)) / L * 100;
-fprintf("用户1:直接解调误码率：%.4f\n",ber_direct);
+% rx_bit_direct = reshape([(I > 0); (Q > 0)], [], 1);
+% L = min(length(tx_bit), length(rx_bit_direct));
+% ber_direct = sum(tx_bit(1:L) ~= rx_bit_direct(1:L)) / L * 100;
+% fprintf("用户1:直接解调误码率：%.4f\n",ber_direct);
 
 %用户2
 % (ptr+dfe)
@@ -41,22 +41,32 @@ fprintf("用户2:ptr_dfe误码率：%.4f\n",ber_ptr_dfe_double);
 % ber_dfe_double = sum(tx_bit_double(1:L) ~= rx_bit_dfe(1:L)) / L * 100
 
 % (直接解调)
-rx_bit_direct = reshape([(I > 0); (Q > 0)], [], 1);
-L = min(length(tx_bit_double), length(rx_bit_direct));
-ber_direct_double = sum(tx_bit_double(1:L) ~= rx_bit_direct(1:L)) / L * 100;
-fprintf("用户2:直接解调误码率：%.4f\n",ber_direct_double);
+% rx_bit_direct = reshape([(I > 0); (Q > 0)], [], 1);
+% L = min(length(tx_bit_double), length(rx_bit_direct));
+% ber_direct_double = sum(tx_bit_double(1:L) ~= rx_bit_direct(1:L)) / L * 100;
+% fprintf("用户2:直接解调误码率：%.4f\n",ber_direct_double);
 
 %输出SIC 结果：
 %用户1
-rx_bit_ptr_sic_dfe = reshape([(I1_dec>0);(Q1_dec>0)], [], 1);
-L = min(length(tx_bit), length(rx_bit_ptr_sic_dfe));
-ber_ptr_sic_dfe_double = sum(tx_bit(1:L) ~= rx_bit_ptr_sic_dfe(1:L)) / L * 100;
-fprintf("用户1:ptr_sic_dfe误码率：%.4f\n",ber_ptr_sic_dfe_double);
-%用户2
-rx_bit_ptr_sic_dfe = reshape([(I2_dec>0);(Q2_dec>0)], [], 1);
-L = min(length(tx_bit), length(rx_bit_ptr_sic_dfe));
-ber_ptr_sic_dfe_double = sum(tx_bit_double(1:L) ~= rx_bit_ptr_sic_dfe(1:L)) / L * 100;
-fprintf("用户2:ptr_sic_dfe误码率：%.4f\n",ber_ptr_sic_dfe_double);
+% ATR + DFE
+rx_bit_atr_dfe = reshape([(I_atr_dfe_1>0);(Q_atr_dfe_1>0)], [], 1);
+L = min(length(tx_bit), length(rx_bit_atr_dfe));
+ber_atr_dfe = sum(tx_bit(1:L) ~= rx_bit_atr_dfe(1:L)) / L * 100;
+fprintf("用户1:atr_dfe误码率：%.4f\n",ber_atr_dfe);
+rx_bit_atr_dfe_double = reshape([(I_atr_dfe_2>0);(Q_atr_dfe_2>0)], [], 1);
+L = min(length(tx_bit_double), length(rx_bit_atr_dfe_double));
+ber_atr_dfe_double = sum(tx_bit_double(1:L) ~= rx_bit_atr_dfe_double(1:L)) / L * 100;
+fprintf("用户2:atr_dfe误码率：%.4f\n",ber_atr_dfe_double);
+
+% rx_bit_ptr_sic_dfe = reshape([(I1_dec>0);(Q1_dec>0)], [], 1);
+% L = min(length(tx_bit), length(rx_bit_ptr_sic_dfe));
+% ber_ptr_sic_dfe_double = sum(tx_bit(1:L) ~= rx_bit_ptr_sic_dfe(1:L)) / L * 100;
+% fprintf("用户1:ptr_sic_dfe误码率：%.4f\n",ber_ptr_sic_dfe_double);
+% %用户2
+% rx_bit_ptr_sic_dfe = reshape([(I2_dec>0);(Q2_dec>0)], [], 1);
+% L = min(length(tx_bit_double), length(rx_bit_ptr_sic_dfe));
+% ber_ptr_sic_dfe_double = sum(tx_bit_double(1:L) ~= rx_bit_ptr_sic_dfe(1:L)) / L * 100;
+% fprintf("用户2:ptr_sic_dfe误码率：%.4f\n",ber_ptr_sic_dfe_double);
 
 % % 绘制 q 函数
 % %用户1
